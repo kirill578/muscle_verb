@@ -1,60 +1,142 @@
-import React from 'react';
-import { Box, Button, Paper } from '@material-ui/core'
-import Keyboard from 'react-simple-keyboard';
-import 'react-simple-keyboard/build/css/index.css';
+import React from "react";
+import { Machine } from 'xstate';
+import { useMachine } from '@xstate/react';
+import "react-simple-keyboard/build/css/index.css";
+import { WordRound } from './WordRound';
+import successFx from 'sounds/success.mp3';
+import failFx from './sounds/fail.mp3';
+import useSound from "use-sound";
 
-const abc = 'abcdefghijklmnopqrstuvwxyz'.split('');
+const words = [
+  "didactic",
+  "esteem",
+  "Unfortunately",
+  "curiosity",
+  "believe",
+  "Unfortunately",
+  "Interesting",
+  "quickly",
+  "processor",
+  "Rabbit",
+  "cancelled",
+  "inspiration",
+  "Possibly",
+  "especially",
+  "improvement",
+  "existing",
+  "happening",
+  "allowed",
+  "behavior",
+  "crucial",
+  "Existing",
+  "stretch",
+  'shuffle'
+].map(w => w.toLocaleLowerCase());
+
+
+enum State {
+  Success = 'SUCCESS',
+  Fail = 'FAIL',
+  Play  = 'PLAY'
+}
+
+export interface StateSchema {
+    states: {
+        [State.Play]: {
+          states: {
+            [State.Fail]: {},
+            [State.Success]: {},
+          }
+        },
+        [State.Fail]: {
+          states: {
+            [State.Play]: {},
+          }
+        };
+        [State.Success]: {
+          states: {
+            [State.Play]: {},
+          }
+        };
+    };
+}
+
+export type StateEvent =
+    | { type: 'success' }
+    | { type: 'fail' };
+
+export const stateMachine = Machine<
+    {},
+    StateSchema,
+    StateEvent
+>({
+    id: 'success',
+    initial: State.Play,
+    context: {
+    },
+    states: {
+        [State.Play]: {
+            on: {
+                success: State.Success,
+                fail: State.Fail,
+            },
+        },
+        [State.Fail]: {
+            after: {
+                200: {
+                    target: State.Play,
+                    actions: [],
+                },
+            },
+        },
+        [State.Success]: {
+            after: {
+                4000: State.Play,
+            },
+        },
+    },
+});
+
+function shuffleArray<T>(originalArray: T[]): T[] {
+  const array = originalArray;
+  for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+  }
+  return array;
+}
+
+const wordsForGame = shuffleArray(words);
 
 export const App = () => {
-  const ref = React.useRef<any>();
-  const [buffer, setBuffer] = React.useState('');
-  React.useEffect(() => {
-    const onKey = ({ key }: any) => {
-      if (!abc.includes(key)) {
-        return;
-      }
-      setBuffer(old => old + key);
-      if (ref.current) {
-        (window as any).keyboard = ref.current;
-        abc.filter(char => char !== key).forEach(char =>
-          ref.current.physicalKeyboard.handleHighlightKeyUp({
-            key: char,
-            code: 'key'
-        }));
-        ref.current.physicalKeyboard.handleHighlightKeyDown({
-            key,
-            code: 'key'
-        });
-      }
-    }
-    window.addEventListener('keyup', onKey);
-    return () => {
-      window.removeEventListener('keyup', onKey);
-    };
-  }, [setBuffer]);
+  const [playSuccess] = useSound(successFx);
+  const [playFail] = useSound(failFx);
 
-  return (
-    <Box position="absolute" width="100%" height="100%" p="10px">
-      <Box display="flex" flexDirection="row">
-        {buffer.split('').map((char, index) => {
-          return (
-            <Box key={index} paddingRight="20px">
-              <Paper elevation={3}>
-                <Box width="70px" height="90px" textAlign="center" fontSize="70px">{char}</Box>
-              </Paper>
-            </Box>
-          )
-        })}
-      </Box>
-      <Button variant="outlined">Button</Button>
-      <Keyboard
-        keyboardRef={r => {
-          ref.current = r;
-        }}
-        syncInstanceInputs={true}
-        onChange={() => {}}
-        onKeyPress={() => {}}
-      />
-    </Box>
-  );
-}
+  const [{ value: state }, send] = useMachine(stateMachine);
+  const [i, setI] = React.useState(0);
+  const word = wordsForGame[i];
+  if (state === State.Play) {
+    return <WordRound 
+      targetWord={word}
+      onSuccess={() => {
+        send({
+          type: 'success'
+        });
+        playSuccess();
+        setI(i => i + 1);
+      }}
+      onFail={() => {
+        send({
+          type: 'fail'
+        })
+        playFail();
+      }}
+    />
+  } else if (state === State.Success) {
+    return <>success</>;
+  } else {
+    return <>fail</>;
+  }
+};
