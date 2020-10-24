@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "muscle-keyboard",
   "version": "0.1.0",
   "homepage": "https://kirill578.github.io/react-template/",
   "dependencies": {
@@ -12,6 +12,7 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-scripts": "3.2.0",
+    "react-simple-keyboard": "^2.5.17",
     "typescript": "^3.6.4"
   },
   "scripts": {
