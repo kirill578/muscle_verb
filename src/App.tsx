@@ -80,7 +80,7 @@ export const stateMachine = Machine<
     StateEvent
 >({
     id: 'success',
-    initial: State.Play,
+    initial: State.Blind,
     context: {
     },
     states: {
@@ -106,7 +106,7 @@ export const stateMachine = Machine<
         },
         [State.Success]: {
             after: {
-                1000: State.Play,
+                1000: State.Blind,
             },
         },
     },
@@ -165,7 +165,8 @@ export const App = () => {
         playSuccess();
         setI(i => i + 1);
       }}
-      onFail={() => {
+      onFail={(failWith) => {
+        setLastError(failWith)
         send({
           type: 'fail'
         })

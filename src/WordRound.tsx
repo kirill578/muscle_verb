@@ -85,7 +85,7 @@ export const WordRound = ({
       <Box display="flex" flexDirection="row">
         <WordRow
           word={targetWord.split("").map((char, index) => {
-            if (!blind && highlightPosition && index === highlightPosition && index >= position) {
+            if (!blind && highlightPosition !== undefined && index === highlightPosition && index >= position) {
               return {
                 char,
                 type: LetterType.Highlight,
