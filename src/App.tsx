@@ -36,7 +36,7 @@ export const App = () => {
   if (playing) {
     return (<Round 
       multiply={3}
-      words={words}
+      words={words.filter(w => w.length > 0)}
     />);
   } else {
     return (<Box
