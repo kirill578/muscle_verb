@@ -37,7 +37,7 @@ export const App = () => {
     return (<Round 
       onResult={(result) => {
         console.log(result);
-        const array = Object.entries(result).sort((a, b) => a[1].failedAttempts - b[1].failedAttempts).map(w => w[0]);
+        const array = Object.entries(result).sort((a, b) => b[1].failedAttempts - a[1].failedAttempts).map(w => w[0]);
         setWords(array);
         setPlaying(false);
       }}
