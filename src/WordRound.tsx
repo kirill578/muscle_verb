@@ -80,7 +80,6 @@ export const WordRound = ({targetWord, onSuccess, onFail}: WordRoundProps) => {
           keyboardRef={(r) => {
             ref.current = r;
           }}
-          syncInstanceInputs={true}
           onChange={() => {}}
           onKeyPress={() => {}}
         />

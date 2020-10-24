@@ -3,9 +3,9 @@ import { Machine } from 'xstate';
 import { useMachine } from '@xstate/react';
 import "react-simple-keyboard/build/css/index.css";
 import { WordRound } from './WordRound';
-import successFx from 'sounds/success.mp3';
-import failFx from './sounds/fail.mp3';
 import useSound from "use-sound";
+const successFx = require('./sounds/success.mp3');
+const failFx = require('./sounds/fail.mp3');
 
 const words = [
   "didactic",
