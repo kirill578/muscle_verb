@@ -17,22 +17,28 @@ export const WordRound = ({blind, targetWord, onSuccess, onFail}: WordRoundProps
   const [position, setPosition] = React.useState(0);
 
   React.useEffect(() => {
-    if (ref.current) {
-      const key = targetWord.split('')[position];
-      abc
-        .filter((char) => char !== key)
-        .forEach((char) =>
-          ref.current.physicalKeyboard.handleHighlightKeyUp({
-            key: char,
-            code: "key",
-          })
-        );
-      ref.current.physicalKeyboard.handleHighlightKeyDown({
-        key,
-        code: "key",
-      });
+    if (position === 0) {
+      var msg = new SpeechSynthesisUtterance(targetWord);
+      window.speechSynthesis.speak(msg);  
     }
-  }, [position, targetWord]);
+    if (!blind) {
+      const key = targetWord.split('')[position];
+      if (ref.current) {
+        abc
+          .filter((char) => char !== key)
+          .forEach((char) =>
+            ref.current.physicalKeyboard.handleHighlightKeyUp({
+              key: char,
+              code: "key",
+            })
+          );
+        ref.current.physicalKeyboard.handleHighlightKeyDown({
+          key,
+          code: "key",
+        });
+      }
+    }
+  }, [blind, position, targetWord]);
 
   React.useEffect(() => {
     const onKey = ({ key }: any) => {

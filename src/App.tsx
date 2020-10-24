@@ -9,6 +9,7 @@ const successFx = require('./sounds/success.mp3');
 const failFx = require('./sounds/fail.mp3');
 
 const words = [
+  "beautiful",
   "didactic",
   "esteem",
   "Unfortunately",
