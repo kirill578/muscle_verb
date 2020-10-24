@@ -122,6 +122,9 @@ export const Round = ({words, multiply, onResult}: RoundProps) => {
   const [lastError, setLastError] = React.useState<string | undefined>(undefined);
   const word = wordsForGame[i % wordsForGame.length];
 
+  console.log(wordsForGame.length);
+  console.log(i);
+
   React.useEffect(() => {
     if (i === wordsForGame.length) {
       onResult(result);

@@ -39,6 +39,7 @@ export const App = () => {
         console.log(result);
         const array = Object.entries(result).sort((a, b) => a[1].failedAttempts - b[1].failedAttempts).map(w => w[0]);
         setWords(array);
+        setPlaying(false);
       }}
       multiply={3}
       words={words.filter(w => w.length > 0)}
