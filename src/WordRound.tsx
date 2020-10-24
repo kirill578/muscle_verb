@@ -9,18 +9,22 @@ const abc = "abcdefghijklmnopqrstuvwxyz".split("");
 type WordRoundProps = {
   blind: boolean;
   targetWord: string;
+  commonErrorWord?: string;
   onSuccess: () => void;
-  onFail: () => void;
+  onFail: (failWith: string) => void;
 };
 
 export const WordRound = ({
   blind,
   targetWord,
+  commonErrorWord,
   onSuccess,
   onFail,
 }: WordRoundProps) => {
   const ref = React.useRef<any>();
-  const [position, setPosition] = React.useState(0);
+  
+  const [buffer, setBuffer] = React.useState('');
+  const position = buffer.length;
 
   React.useEffect(() => {
     if (position === 0) {
@@ -52,10 +56,10 @@ export const WordRound = ({
           if (position === targetWord.length - 1) {
             onSuccess();
           } else {
-            setPosition((p) => p + 1);
+            setBuffer((p) => p + key);
           }
         } else {
-          onFail();
+          onFail(buffer + key);
         }
       }
     };
@@ -63,7 +67,10 @@ export const WordRound = ({
     return () => {
       window.removeEventListener("keyup", onKey);
     };
-  }, [onFail, onSuccess, position, targetWord, setPosition]);
+  }, [onFail, onSuccess, position, targetWord, setBuffer, buffer]);
+
+  const highlightPosition = !commonErrorWord ? undefined : targetWord.split('').findIndex((targetChar, targetIndex) => commonErrorWord.split('')[targetIndex] !== targetChar);
+
 
   return (
     <Box
@@ -78,12 +85,17 @@ export const WordRound = ({
       <Box display="flex" flexDirection="row">
         <WordRow
           word={targetWord.split("").map((char, index) => {
-            if (blind && !(index < position)) {
+            if (!blind && highlightPosition && index === highlightPosition && index >= position) {
+              return {
+                char,
+                type: LetterType.Highlight,
+              };
+            } else if (blind && !(index < position)) {
               return undefined;
             } else {
               return {
                 char,
-                type: index < position ? LetterType.Correct : LetterType.Faded,
+                type: (index < position ? LetterType.Correct : LetterType.Faded),
               };
             }
           })}

@@ -131,19 +131,22 @@ export const App = () => {
 
   const [{ value: state }, send] = useMachine(stateMachine);
   const [i, setI] = React.useState(0);
+  const [lastError, setLastError] = React.useState<string | undefined>(undefined);
   const word = wordsForGame[i % wordsForGame.length];
   if (state === State.Play) {
     return <WordRound 
       key='play'
       blind={false}
       targetWord={word}
+      commonErrorWord={lastError}
       onSuccess={() => {
         send({
           type: 'success'
         });
         playSuccess();
       }}
-      onFail={() => {
+      onFail={(failWith) => {
+        setLastError(failWith)
         send({
           type: 'fail'
         })
