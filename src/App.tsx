@@ -33,11 +33,14 @@ const demoWords = [
 export const App = () => {
   const [playing, setPlaying] = React.useState(false);
   const [words, setWords] = React.useState(demoWords);
+  const [results, setResults] = React.useState<undefined | ({ word: string; failedAttempts: number}[])>(undefined);
   if (playing) {
     return (<Round 
       onResult={(result) => {
         console.log(result);
-        const array = Object.entries(result).sort((a, b) => b[1].failedAttempts - a[1].failedAttempts).map(w => w[0]);
+        const sorted = Object.entries(result).sort((a, b) => b[1].failedAttempts - a[1].failedAttempts).map(w => ({ word: w[0], failedAttempts: w[1].failedAttempts}));
+        setResults(sorted);
+        const array = sorted.map(w => w.word);
         setWords(array);
         setPlaying(false);
       }}
@@ -53,7 +56,10 @@ export const App = () => {
       display="flex"
       flexDirection="column"
       alignItems="center"
-    >
+    > 
+      {results && results.map((r, i) => {
+        return <Box key={i}>{r.failedAttempts} - {r.word}</Box>
+      })}
       <TextareaAutosize value={words.join('\n')} onChange={(e) => {
         if (e.target && e.target.value) {
           const value = e.target.value;
