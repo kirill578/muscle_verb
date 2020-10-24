@@ -91,7 +91,7 @@ export const stateMachine = Machine<
         },
         [State.Success]: {
             after: {
-                4000: State.Play,
+                2000: State.Play,
             },
         },
     },
