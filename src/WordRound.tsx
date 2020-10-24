@@ -6,12 +6,13 @@ import "react-simple-keyboard/build/css/index.css";
 const abc = "abcdefghijklmnopqrstuvwxyz".split("");
 
 type WordRoundProps = {
+  blind: boolean;
   targetWord: string;
   onSuccess: () => void;
   onFail: () => void;
 }
 
-export const WordRound = ({targetWord, onSuccess, onFail}: WordRoundProps) => {
+export const WordRound = ({blind, targetWord, onSuccess, onFail}: WordRoundProps) => {
   const ref = React.useRef<any>();
   const [position, setPosition] = React.useState(0);
 
@@ -68,7 +69,7 @@ export const WordRound = ({targetWord, onSuccess, onFail}: WordRoundProps) => {
                   fontSize="70px"
                   color={index < position ? 'green' : '#eee'}
                 >
-                  {char}
+                  {(blind && !(index < position)) ? '_' : char}
                 </Box>
               </Paper>
             </Box>

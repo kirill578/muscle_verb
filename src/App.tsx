@@ -2,6 +2,7 @@ import React from "react";
 import { Machine } from 'xstate';
 import { useMachine } from '@xstate/react';
 import "react-simple-keyboard/build/css/index.css";
+import { Box } from "@material-ui/core";
 import { WordRound } from './WordRound';
 import useSound from "use-sound";
 const successFx = require('./sounds/success.mp3');
@@ -37,12 +38,19 @@ const words = [
 enum State {
   Success = 'SUCCESS',
   Fail = 'FAIL',
-  Play  = 'PLAY'
+  Play  = 'PLAY',
+  Blind  = 'BLIND'
 }
 
 export interface StateSchema {
     states: {
         [State.Play]: {
+          states: {
+            [State.Fail]: {},
+            [State.Blind]: {},
+          }
+        },
+        [State.Blind]: {
           states: {
             [State.Fail]: {},
             [State.Success]: {},
@@ -77,10 +85,16 @@ export const stateMachine = Machine<
     states: {
         [State.Play]: {
             on: {
-                success: State.Success,
+                success: State.Blind,
                 fail: State.Fail,
             },
         },
+        [State.Blind]: {
+          on: {
+              success: State.Success,
+              fail: State.Fail,
+          },
+      },
         [State.Fail]: {
             after: {
                 200: {
@@ -91,7 +105,7 @@ export const stateMachine = Machine<
         },
         [State.Success]: {
             after: {
-                2000: State.Play,
+                1000: State.Play,
             },
         },
     },
@@ -116,9 +130,29 @@ export const App = () => {
 
   const [{ value: state }, send] = useMachine(stateMachine);
   const [i, setI] = React.useState(0);
-  const word = wordsForGame[i];
+  const word = wordsForGame[i % wordsForGame.length];
   if (state === State.Play) {
     return <WordRound 
+      key='play'
+      blind={false}
+      targetWord={word}
+      onSuccess={() => {
+        send({
+          type: 'success'
+        });
+        playSuccess();
+      }}
+      onFail={() => {
+        send({
+          type: 'fail'
+        })
+        playFail();
+      }}
+    />
+  } else if (state === State.Blind) {
+    return <WordRound
+      key='blind' 
+      blind={true}
       targetWord={word}
       onSuccess={() => {
         send({
@@ -135,8 +169,8 @@ export const App = () => {
       }}
     />
   } else if (state === State.Success) {
-    return <>success</>;
+    return <Box position="fixed" width="100%" height="100%" style={{backgroundColor: 'green'}} />;
   } else {
-    return <>fail</>;
+    return <Box position="fixed" width="100%" height="100%" style={{backgroundColor: 'red'}} />;
   }
 };
