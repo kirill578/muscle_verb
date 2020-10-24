@@ -98,9 +98,10 @@ function shuffleArray<T>(originalArray: T[]): T[] {
 export type RoundProps = {
   words: string[];
   multiply: number;
+  onResult:  (result: Record<string, { failedAttempts: number }>) => void;
 }
 
-export const Round = ({words, multiply}: RoundProps) => {
+export const Round = ({words, multiply, onResult}: RoundProps) => {
   const [wordsForGame] = React.useState(() => {
     const output: string[] = [];
     for (let i = 0; i < multiply; i++) {
@@ -108,6 +109,10 @@ export const Round = ({words, multiply}: RoundProps) => {
     }
     return shuffleArray(output);
   })
+  const [result, setResult] = React.useState(wordsForGame.reduce((p, w: string) => { 
+    p[w] = { failedAttempts: 0 };
+    return p;
+  }, {} as Record<string, { failedAttempts: number; }>));
 
   const [playSuccess] = useSound(successFx);
   const [playFail] = useSound(failFx);
@@ -116,6 +121,13 @@ export const Round = ({words, multiply}: RoundProps) => {
   const [i, setI] = React.useState(0);
   const [lastError, setLastError] = React.useState<string | undefined>(undefined);
   const word = wordsForGame[i % wordsForGame.length];
+
+  React.useEffect(() => {
+    if (i === wordsForGame.length) {
+      onResult(result);
+    }
+  }, [result, i, onResult, wordsForGame]);
+
   if (state === State.Play) {
     return <WordRound 
       key='play'
@@ -129,6 +141,10 @@ export const Round = ({words, multiply}: RoundProps) => {
         playSuccess();
       }}
       onFail={(failWith) => {
+        setResult(r => {
+          r[word].failedAttempts++; 
+          return r;
+        })
         setLastError(failWith)
         send({
           type: 'fail'
@@ -149,6 +165,10 @@ export const Round = ({words, multiply}: RoundProps) => {
         setI(i => i + 1);
       }}
       onFail={(failWith) => {
+        setResult(r => {
+          r[word].failedAttempts++; 
+          return r;
+        })
         setLastError(failWith)
         send({
           type: 'fail'

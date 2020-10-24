@@ -35,6 +35,11 @@ export const App = () => {
   const [words, setWords] = React.useState(demoWords);
   if (playing) {
     return (<Round 
+      onResult={(result) => {
+        console.log(result);
+        const array = Object.entries(result).sort((a, b) => a[1].failedAttempts - b[1].failedAttempts).map(w => w[0]);
+        setWords(array);
+      }}
       multiply={3}
       words={words.filter(w => w.length > 0)}
     />);
