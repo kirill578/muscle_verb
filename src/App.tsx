@@ -45,7 +45,7 @@ export const App = () => {
         setPlaying(false);
       }}
       multiply={3}
-      words={words.filter(w => w.length > 0)}
+      words={words.filter(w => w.length > 0).map(w => w.toLocaleLowerCase()).map(w => w.trim())}
     />);
   } else {
     return (<Box
