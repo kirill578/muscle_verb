@@ -109,7 +109,8 @@ export const Round = ({words, multiply, onResult}: RoundProps) => {
     }
     return shuffleArray(output);
   })
-  const [result, setResult] = React.useState(words.reduce((p, w: string) => { 
+  const [result, setResult] = React.useState(() => words.reduce((p, w: string) => { 
+    console.log('re-reduce');
     p[w] = { failedAttempts: 0 };
     return p;
   }, {} as Record<string, { failedAttempts: number; }>));
