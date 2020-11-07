@@ -2,6 +2,7 @@ import React from "react";
 import "react-simple-keyboard/build/css/index.css";
 import { Box, Button, TextareaAutosize } from "@material-ui/core";
 import { Round } from './Round';
+import { DictateRound } from './DictateRound';
 
 const demoWords = [
   "beautiful",
@@ -30,10 +31,15 @@ const demoWords = [
 ].map(w => w.toLocaleLowerCase());
 
 
+
 export const App = () => {
-  const [playing, setPlaying] = React.useState(false);
+  const [playing, setPlaying] =  React.useState(false);
+  const [dictate, setDictate] =  React.useState(false);
   const [words, setWords] = React.useState(demoWords);
   const [results, setResults] = React.useState<undefined | ({ word: string; failedAttempts: number}[])>(undefined);
+  if (dictate) {
+    return <DictateRound />;
+  }
   if (playing) {
     return (<Round 
       onResult={(result) => {
@@ -68,6 +74,7 @@ export const App = () => {
         }
       }} />
       <Button onClick={() => setPlaying(true)}>Start</Button>
+      <Button onClick={() => setDictate(true)}>Start Dictate</Button>
     </Box>);
   }
 };

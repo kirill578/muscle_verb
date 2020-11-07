@@ -4,11 +4,12 @@ import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import { WordRow, LetterType } from "./LetterRow";
 
-const abc = "abcdefghijklmnopqrstuvwxyz".split("");
+const abc = "abcdefghijklmnopqrstuvwxyz0123456789".split("");
 
 type WordRoundProps = {
   blind: boolean;
   targetWord: string;
+  sayWord?: string;
   commonErrorWord?: string;
   onSuccess: () => void;
   onFail: (failWith: string) => void;
@@ -17,6 +18,7 @@ type WordRoundProps = {
 export const WordRound = ({
   blind,
   targetWord,
+  sayWord,
   commonErrorWord,
   onSuccess,
   onFail,
@@ -25,10 +27,12 @@ export const WordRound = ({
   
   const [buffer, setBuffer] = React.useState('');
   const position = buffer.length;
+  console.log(targetWord)
+  console.log(sayWord)
 
   React.useEffect(() => {
     if (position === 0) {
-      var msg = new SpeechSynthesisUtterance(targetWord);
+      var msg = new SpeechSynthesisUtterance(sayWord || targetWord);
       window.speechSynthesis.speak(msg);
     }
     const key = targetWord.split("")[position];
@@ -46,7 +50,7 @@ export const WordRound = ({
         code: "key",
       });
     }
-  }, [position, targetWord]);
+  }, [position, targetWord, sayWord]);
 
   React.useEffect(() => {
     const onKey = ({ key }: any) => {
