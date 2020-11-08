@@ -36,6 +36,7 @@ export const WordRound = ({
       if (rate) {
         msg.rate = rate;
       }
+      msg.lang = 'en-UK';
       window.speechSynthesis.speak(msg);
     }
     const key = targetWord.split("")[position];

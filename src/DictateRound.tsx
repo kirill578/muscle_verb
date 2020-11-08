@@ -105,7 +105,8 @@ export const DictateRound = ({ length, rate }: DictateRoundProps) => {
         setI(i => i + 1);
       }}
       onFail={(failWith) => {
-        console.log(`${word}\n${failWith} <-- error`)
+        if (failWith.length > 1)
+          console.log(`${word}\n${failWith} <-- error`)
         send({
           type: 'fail'
         })
