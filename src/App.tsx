@@ -1,6 +1,7 @@
 import React from "react";
 import "react-simple-keyboard/build/css/index.css";
-import { Box, Button, TextareaAutosize } from "@material-ui/core";
+import { Box, Button, TextareaAutosize, Input } from "@material-ui/core";
+import Slider from '@material-ui/core/Slider';
 import { Round } from './Round';
 import { DictateRound } from './DictateRound';
 
@@ -34,11 +35,13 @@ const demoWords = [
 
 export const App = () => {
   const [playing, setPlaying] =  React.useState(false);
+  const [rate, setRate] =  React.useState(1);
+  const [length, setLength] =  React.useState(6);
   const [dictate, setDictate] =  React.useState(false);
   const [words, setWords] = React.useState(demoWords);
   const [results, setResults] = React.useState<undefined | ({ word: string; failedAttempts: number}[])>(undefined);
   if (dictate) {
-    return <DictateRound />;
+    return <DictateRound length={length} rate={rate} />;
   }
   if (playing) {
     return (<Round 
@@ -56,9 +59,10 @@ export const App = () => {
   } else {
     return (<Box
       position="absolute"
-      width="100%"
-      height="100%"
-      p="10px"
+      top="10px"
+      bottom="10px"
+      left="10px"
+      right="10px"
       display="flex"
       flexDirection="column"
       alignItems="center"
@@ -74,6 +78,32 @@ export const App = () => {
         }
       }} />
       <Button onClick={() => setPlaying(true)}>Start</Button>
+      <Box width="200px">
+        Speech Rate:
+        <Slider
+          value={rate}
+          onChange={(event, newValue) => setRate(newValue as number)}
+          defaultValue={1}
+          aria-labelledby="discrete-slider"
+          valueLabelDisplay="auto"
+          step={0.1}
+          min={0.3}
+          max={2}
+        />
+      </Box>
+      <Box width="200px">
+        Length:
+        <Slider
+          value={length}
+          onChange={(event, newValue) => setLength(newValue as number)}
+          defaultValue={6}
+          aria-labelledby="discrete-slider"
+          valueLabelDisplay="auto"
+          step={1}
+          min={3}
+          max={15}
+        />
+      </Box>
       <Button onClick={() => setDictate(true)}>Start Dictate</Button>
     </Box>);
   }

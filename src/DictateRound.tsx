@@ -70,14 +70,18 @@ export const stateMachine = Machine<
     },
 });
 
+
+
+const createRandomNumber = (length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * 10)) ).map(n => `${n}`).join(' ');
+const createSetOfNumbers = (length: number, count: number)  => [...new Array(count)].map(_ => createRandomNumber(length));
+
 export type DictateRoundProps = {
+  length: number;
+  rate: number;
 }
 
-const createRandomNumber = () => [...new Array(6)].map(i => (Math.floor(Math.random() * 10)) ).map(n => `${n}`).join(' ');
-const createSetOfNumbers = ()  => [...new Array(20)].map(_ => createRandomNumber());
-
-export const DictateRound = () => {
-  const [words] = React.useState(createSetOfNumbers());
+export const DictateRound = ({ length, rate }: DictateRoundProps) => {
+  const [words] = React.useState(createSetOfNumbers(length, 100));
   const [i, setI] = React.useState(0);
   const word = words[i % words.length];
 
@@ -90,6 +94,7 @@ export const DictateRound = () => {
     return <WordRound
       key={i} 
       blind={true}
+      rate={rate}
       targetWord={word.replace(/\s/g, "")}
       sayWord={word}
       onSuccess={() => {
@@ -100,6 +105,7 @@ export const DictateRound = () => {
         setI(i => i + 1);
       }}
       onFail={(failWith) => {
+        console.log(`${word}\n${failWith} <-- error`)
         send({
           type: 'fail'
         })

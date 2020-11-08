@@ -7,6 +7,7 @@ import { WordRow, LetterType } from "./LetterRow";
 const abc = "abcdefghijklmnopqrstuvwxyz0123456789".split("");
 
 type WordRoundProps = {
+  rate?: number;
   blind: boolean;
   targetWord: string;
   sayWord?: string;
@@ -16,6 +17,7 @@ type WordRoundProps = {
 };
 
 export const WordRound = ({
+  rate,
   blind,
   targetWord,
   sayWord,
@@ -27,12 +29,13 @@ export const WordRound = ({
   
   const [buffer, setBuffer] = React.useState('');
   const position = buffer.length;
-  console.log(targetWord)
-  console.log(sayWord)
 
   React.useEffect(() => {
     if (position === 0) {
       var msg = new SpeechSynthesisUtterance(sayWord || targetWord);
+      if (rate) {
+        msg.rate = rate;
+      }
       window.speechSynthesis.speak(msg);
     }
     const key = targetWord.split("")[position];
@@ -50,7 +53,7 @@ export const WordRound = ({
         code: "key",
       });
     }
-  }, [position, targetWord, sayWord]);
+  }, [position, targetWord, sayWord, rate]);
 
   React.useEffect(() => {
     const onKey = ({ key }: any) => {
