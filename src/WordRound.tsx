@@ -33,6 +33,7 @@ export const WordRound = ({
   React.useEffect(() => {
     if (position === 0) {
       var msg = new SpeechSynthesisUtterance(sayWord || targetWord);
+      msg.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("English"))!;
       if (rate) {
         msg.rate = rate;
       }
