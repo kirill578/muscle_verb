@@ -76,7 +76,7 @@ export enum WordType {
   AlphaNumeric = "abcdefghijklmnopqrstuvwxyz0123456789"
 }
 
-const createRandomNumber = (type: string, length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * type.length)) ).map(n => `${type[n]}`).join(' ');
+const createRandomNumber = (type: string, length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * type.length)) ).map(n => `${type[n]}`).join('. ');
 const createSetOfNumbers = (type: WordType, length: number, count: number)  => [...new Array(count)].map(_ => createRandomNumber(type, length));
 
 export type DictateRoundProps = {
@@ -100,7 +100,7 @@ export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
       key={i} 
       blind={true}
       rate={rate}
-      targetWord={word.replace(/\s/g, "")}
+      targetWord={word.replace(/\D/g, "")}
       sayWord={word}
       onSuccess={() => {
         send({
