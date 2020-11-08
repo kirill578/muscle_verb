@@ -70,18 +70,23 @@ export const stateMachine = Machine<
     },
 });
 
+export enum WordType {
+  Letters = "abcdefghijklmnopqrstuvwxyz",
+  Numbers = "0123456789",
+  AlphaNumeric = "abcdefghijklmnopqrstuvwxyz0123456789"
+}
 
-
-const createRandomNumber = (length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * 10)) ).map(n => `${n}`).join(' ');
-const createSetOfNumbers = (length: number, count: number)  => [...new Array(count)].map(_ => createRandomNumber(length));
+const createRandomNumber = (type: string, length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * type.length)) ).map(n => `${type[n]}`).join(' ');
+const createSetOfNumbers = (type: WordType, length: number, count: number)  => [...new Array(count)].map(_ => createRandomNumber(type, length));
 
 export type DictateRoundProps = {
   length: number;
   rate: number;
+  type: WordType;
 }
 
-export const DictateRound = ({ length, rate }: DictateRoundProps) => {
-  const [words] = React.useState(createSetOfNumbers(length, 100));
+export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
+  const [words] = React.useState(createSetOfNumbers(type, length, 100));
   const [i, setI] = React.useState(0);
   const word = words[i % words.length];
 

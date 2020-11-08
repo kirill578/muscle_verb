@@ -1,9 +1,9 @@
 import React from "react";
 import "react-simple-keyboard/build/css/index.css";
-import { Box, Button, TextareaAutosize, Input } from "@material-ui/core";
+import { Box, Button, FormControl, FormControlLabel, FormLabel, Radio, RadioGroup, TextareaAutosize } from "@material-ui/core";
 import Slider from '@material-ui/core/Slider';
 import { Round } from './Round';
-import { DictateRound } from './DictateRound';
+import { DictateRound, WordType } from './DictateRound';
 
 const demoWords = [
   "beautiful",
@@ -32,8 +32,14 @@ const demoWords = [
 ].map(w => w.toLocaleLowerCase());
 
 
+const typeMap = {
+  'letters': WordType.Letters,
+  'numbers': WordType.Numbers,
+  'alpha-numeric': WordType.AlphaNumeric,
+}
 
 export const App = () => {
+  const [dictateSet, setDictateSet] =  React.useState<'letters' | 'numbers' | 'alpha-numeric'>('letters');
   const [playing, setPlaying] =  React.useState(false);
   const [rate, setRate] =  React.useState(1);
   const [length, setLength] =  React.useState(6);
@@ -41,7 +47,7 @@ export const App = () => {
   const [words, setWords] = React.useState(demoWords);
   const [results, setResults] = React.useState<undefined | ({ word: string; failedAttempts: number}[])>(undefined);
   if (dictate) {
-    return <DictateRound length={length} rate={rate} />;
+    return <DictateRound length={length} rate={rate} type={typeMap[dictateSet]} />;
   }
   if (playing) {
     return (<Round 
@@ -104,6 +110,14 @@ export const App = () => {
           max={15}
         />
       </Box>
+      <FormControl component="fieldset">
+        <FormLabel component="legend">Type</FormLabel>
+        <RadioGroup aria-label="gender" name="gender1" value={dictateSet} onChange={(e, value) => setDictateSet(() => value as any)}>
+          <FormControlLabel value="letters" control={<Radio />} label="letters" />
+          <FormControlLabel value="numbers" control={<Radio />} label="numbers" />
+          <FormControlLabel value="alpha-numeric" control={<Radio />} label="alpha-numeric" />
+        </RadioGroup>
+      </FormControl>
       <Button onClick={() => setDictate(true)}>Start Dictate</Button>
     </Box>);
   }
