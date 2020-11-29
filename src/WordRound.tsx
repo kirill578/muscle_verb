@@ -31,15 +31,17 @@ export const WordRound = ({
   const position = buffer.length;
 
   React.useEffect(() => {
-    if (position === 0) {
-      var msg = new SpeechSynthesisUtterance(sayWord || targetWord);
-      msg.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("English"))!;
-      if (rate) {
-        msg.rate = rate;
-      }
-      msg.lang = 'en-UK';
-      window.speechSynthesis.speak(msg);
+    const msg = new SpeechSynthesisUtterance(sayWord || targetWord);
+    //msg.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("English"))!;
+    if (rate) {
+      msg.rate = rate;
     }
+    msg.lang = 'en-UK';
+    window.speechSynthesis.speak(msg);
+    return () => window.speechSynthesis.cancel();
+  }, [rate, sayWord, targetWord]);
+
+  React.useEffect(() => {
     const key = targetWord.split("")[position];
     if (ref.current) {
       abc
@@ -86,12 +88,11 @@ export const WordRound = ({
       position="absolute"
       width="100%"
       height="100%"
-      p="10px"
       display="flex"
       flexDirection="column"
       alignItems="center"
     >
-      <Box display="flex" flexDirection="row">
+      <Box display="flex" flexDirection="row" margin="10px">
         <WordRow
           word={targetWord.split("").map((char, index) => {
             if (!blind && highlightPosition !== undefined && index === highlightPosition && index >= position) {

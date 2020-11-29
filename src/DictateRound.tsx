@@ -90,6 +90,8 @@ export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
   const [i, setI] = React.useState(0);
   const word = words[i % words.length];
 
+  const target = word.replace(/\s/g, "").replace(/\./g, '');
+
   const [playSuccess] = useSound(successFx);
   const [playFail] = useSound(failFx);
 
@@ -100,8 +102,8 @@ export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
       key={i} 
       blind={true}
       rate={rate}
-      targetWord={word.replace(/\D/g, "")}
-      sayWord={word}
+      targetWord={target}
+      sayWord={`It is ${word}`}
       onSuccess={() => {
         send({
           type: 'success'
