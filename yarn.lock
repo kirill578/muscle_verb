@@ -5530,6 +5530,11 @@ istanbul-reports@^2.2.6:
   dependencies:
     handlebars "^4.1.2"
 
+jabber@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/jabber/-/jabber-1.1.0.tgz#e58c9d26035befd5cd870f8330448e146b9f76db"
+  integrity sha512-hvyFTNWt1z40kpYUbxMvaYEXGxlHgeBNAK3WQddmJj2gqgyPek31o7bX092ifRqSh4wKV40mzR5FLhTBdGJmlA==
+
 jest-changed-files@^24.9.0:
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/jest-changed-files/-/jest-changed-files-24.9.0.tgz#08d8c15eb79a7fa3fc98269bc14b451ee82f8039"

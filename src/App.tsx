@@ -74,6 +74,7 @@ export const App = () => {
       flexDirection="column"
       alignItems="center"
     > 
+      <Box m="10px">Practice spelling:</Box>
       {results && results.map((r, i) => {
         return <Box key={i}>{r.failedAttempts} - {r.word}</Box>
       })}
@@ -85,6 +86,7 @@ export const App = () => {
         }
       }} />
       <Button onClick={() => setPlaying(true)}>Start</Button>
+      <Box m="10px">Practice spelling:</Box>
       <Box width="200px">
         Speech Rate: {rate}
         <Slider

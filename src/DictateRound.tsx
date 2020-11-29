@@ -98,11 +98,11 @@ export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
   const [i, setI] = React.useState(0);
   const word = words[i % words.length];
 
-  const target = word.replace(/double (\d)/g, '$1$1').replace(/triple (\d)/g, '$1$1$1').replace(/\s/g, "").replace(/\./g, '');
+  const target = word.replace(/double (\d)/g, '$1$1').replace(/triple (\d)/g, '$1$1$1').replace(/\s/g, "").replace(/\./g, '').replace(/,/g, '');
   const sayWord = word;
 
-  console.log(target);
-  console.log(sayWord);
+  // console.log(target);
+  // console.log(sayWord);
 
   const [playSuccess] = useSound(successFx);
   const [playFail] = useSound(failFx);
