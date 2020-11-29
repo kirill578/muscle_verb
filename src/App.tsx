@@ -35,6 +35,7 @@ const demoWords = [
 const typeMap = {
   'letters': WordType.Letters,
   'numbers': WordType.Numbers,
+  'numbersDT': WordType.NumbersDoubleAndTriple,
   'alpha-numeric': WordType.AlphaNumeric,
 }
 
@@ -85,7 +86,7 @@ export const App = () => {
       }} />
       <Button onClick={() => setPlaying(true)}>Start</Button>
       <Box width="200px">
-        Speech Rate:
+        Speech Rate: {rate}
         <Slider
           value={rate}
           onChange={(event, newValue) => setRate(newValue as number)}
@@ -98,7 +99,7 @@ export const App = () => {
         />
       </Box>
       <Box width="200px">
-        Length:
+        Length: {length}
         <Slider
           value={length}
           onChange={(event, newValue) => setLength(newValue as number)}
@@ -115,6 +116,7 @@ export const App = () => {
         <RadioGroup aria-label="gender" name="gender1" value={dictateSet} onChange={(e, value) => setDictateSet(() => value as any)}>
           <FormControlLabel value="letters" control={<Radio />} label="letters" />
           <FormControlLabel value="numbers" control={<Radio />} label="numbers" />
+          <FormControlLabel value="numbersDT" control={<Radio />} label="numbers + double + triple" />
           <FormControlLabel value="alpha-numeric" control={<Radio />} label="alpha-numeric" />
         </RadioGroup>
       </FormControl>

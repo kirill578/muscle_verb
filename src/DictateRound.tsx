@@ -73,10 +73,18 @@ export const stateMachine = Machine<
 export enum WordType {
   Letters = "abcdefghijklmnopqrstuvwxyz",
   Numbers = "0123456789",
+  NumbersDoubleAndTriple = "0123456789DT",
   AlphaNumeric = "abcdefghijklmnopqrstuvwxyz0123456789"
 }
 
-const createRandomNumber = (type: string, length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * type.length)) ).map(n => `${type[n]}`).join('. ');
+const createRandomNumber = (type: string, length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * type.length)) ).map(n => {
+  const letter = type[n];
+  if (type === WordType.NumbersDoubleAndTriple && (letter === 'D' || letter === 'T')) {
+    const newNumber = WordType.Numbers[Math.floor(Math.random() * WordType.Numbers.length)];
+    return `${letter === 'D' ? 'double' : 'triple'} ${newNumber}`;
+  }
+  return letter;
+}).join('. ');
 const createSetOfNumbers = (type: WordType, length: number, count: number)  => [...new Array(count)].map(_ => createRandomNumber(type, length));
 
 export type DictateRoundProps = {
@@ -90,7 +98,11 @@ export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
   const [i, setI] = React.useState(0);
   const word = words[i % words.length];
 
-  const target = word.replace(/\s/g, "").replace(/\./g, '');
+  const target = word.replace(/double (\d)/g, '$1$1').replace(/triple (\d)/g, '$1$1$1').replace(/\s/g, "").replace(/\./g, '');
+  const sayWord = word;
+
+  console.log(target);
+  console.log(sayWord);
 
   const [playSuccess] = useSound(successFx);
   const [playFail] = useSound(failFx);
@@ -103,7 +115,7 @@ export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
       blind={true}
       rate={rate}
       targetWord={target}
-      sayWord={`It is ${word}`}
+      sayWord={`It is ${sayWord}`}
       onSuccess={() => {
         send({
           type: 'success'
