@@ -37,6 +37,7 @@ const typeMap = {
   'numbers': WordType.Numbers,
   'numbersDT': WordType.NumbersDoubleAndTriple,
   'alpha-numeric': WordType.AlphaNumeric,
+  'word': WordType.Word,
 }
 
 export const App = () => {
@@ -120,6 +121,7 @@ export const App = () => {
           <FormControlLabel value="numbers" control={<Radio />} label="numbers" />
           <FormControlLabel value="numbersDT" control={<Radio />} label="numbers + double + triple" />
           <FormControlLabel value="alpha-numeric" control={<Radio />} label="alpha-numeric" />
+          <FormControlLabel value="word" control={<Radio />} label="word (lorem ipsum)" />
         </RadioGroup>
       </FormControl>
       <Button onClick={() => setDictate(true)}>Start Dictate</Button>

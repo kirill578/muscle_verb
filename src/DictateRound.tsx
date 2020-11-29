@@ -5,6 +5,10 @@ import "react-simple-keyboard/build/css/index.css";
 import { Box } from "@material-ui/core";
 import { WordRound } from './WordRound';
 import useSound from "use-sound";
+// @ts-ignore
+import Jabber from 'jabber';
+const jabber = new Jabber();
+
 const successFx = require('./sounds/success.mp3');
 const failFx = require('./sounds/fail.mp3');
 
@@ -74,7 +78,8 @@ export enum WordType {
   Letters = "abcdefghijklmnopqrstuvwxyz",
   Numbers = "0123456789",
   NumbersDoubleAndTriple = "0123456789DT",
-  AlphaNumeric = "abcdefghijklmnopqrstuvwxyz0123456789"
+  AlphaNumeric = "abcdefghijklmnopqrstuvwxyz0123456789",
+  Word = "word",
 }
 
 const createRandomNumber = (type: string, length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * type.length)) ).map(n => {
@@ -85,7 +90,7 @@ const createRandomNumber = (type: string, length: number) => [...new Array(lengt
   }
   return letter;
 }).join('. ');
-const createSetOfNumbers = (type: WordType, length: number, count: number)  => [...new Array(count)].map(_ => createRandomNumber(type, length));
+const createSetOfNumbers = (type: WordType, length: number, count: number)  => [...new Array(count)].map(_ => type === WordType.Word ? jabber.createWord(length).split('').join('. ') : createRandomNumber(type, length));
 
 export type DictateRoundProps = {
   length: number;
