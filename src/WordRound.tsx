@@ -3,6 +3,7 @@ import { Box } from "@material-ui/core";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import { WordRow, LetterType } from "./LetterRow";
+import { SpeechContext } from "./speech";
 
 const abc = "abcdefghijklmnopqrstuvwxyz0123456789".split("");
 
@@ -30,16 +31,17 @@ export const WordRound = ({
   const [buffer, setBuffer] = React.useState('');
   const position = buffer.length;
 
+  const speechLang = React.useContext(SpeechContext);
   React.useEffect(() => {
     const msg = new SpeechSynthesisUtterance(sayWord || targetWord);
-    //msg.voice = speechSynthesis.getVoices().find(voice => voice.name.includes("English"))!;
+    msg.voice = speechSynthesis.getVoices().find(voice => voice.name.includes(speechLang || "English"))!;
     if (rate) {
       msg.rate = rate;
     }
     msg.lang = 'en-UK';
     window.speechSynthesis.speak(msg);
     return () => window.speechSynthesis.cancel();
-  }, [rate, sayWord, targetWord]);
+  }, [rate, sayWord, targetWord, speechLang]);
 
   React.useEffect(() => {
     const key = targetWord.split("")[position];
@@ -78,7 +80,7 @@ export const WordRound = ({
     return () => {
       window.removeEventListener("keyup", onKey);
     };
-  }, [onFail, onSuccess, position, targetWord, setBuffer, buffer]);
+  }, [onFail, onSuccess, position, targetWord, setBuffer, buffer, sayWord]);
 
   const highlightPosition = !commonErrorWord ? undefined : targetWord.split('').findIndex((targetChar, targetIndex) => commonErrorWord.split('')[targetIndex] !== targetChar);
 

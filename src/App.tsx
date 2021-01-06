@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "react-simple-keyboard/build/css/index.css";
 import {
   Box,
@@ -13,6 +13,10 @@ import {
 import Slider from "@material-ui/core/Slider";
 import { Round } from "./Round";
 import { DictateRound, WordType } from "./DictateRound";
+
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import { SpeechContext } from "./speech";
 
 const demoWords = [
   "beautiful",
@@ -48,6 +52,22 @@ const typeMap = {
   word: WordType.Word,
 };
 
+function getSpeech(): Promise<SpeechSynthesisVoice[]> {
+  return new Promise(
+      function (resolve, reject) {
+          let synth = window.speechSynthesis;
+          let id: NodeJS.Timeout;
+
+          id = setInterval(() => {
+              if (synth.getVoices().length !== 0) {
+                  resolve(synth.getVoices());
+                  clearInterval(id);
+              }
+          }, 10);
+      }
+  )
+}
+
 export const App = () => {
   const [dictateSet, setDictateSet] = React.useState<
     "letters" | "numbers" | "alpha-numeric"
@@ -60,30 +80,45 @@ export const App = () => {
   const [results, setResults] = React.useState<
     undefined | { word: string; failedAttempts: number }[]
   >(undefined);
+
+
+  const [voices, setVoices] = React.useState<string[]>([]);
+  useEffect(() => {
+    (async () =>  {
+      setVoices((await getSpeech()).map(voice => voice.name).filter(x => x.includes("")))
+    })();
+  }, []);
+  const [voice, setLang] = React.useState<string | undefined>('Default voice');
+
+
   if (dictate) {
     return (
-      <DictateRound length={length} rate={rate} type={typeMap[dictateSet]} />
+      <SpeechContext.Provider value={voice}>
+        <DictateRound length={length} rate={rate} type={typeMap[dictateSet]} />
+      </SpeechContext.Provider>
     );
   }
   if (playing) {
     return (
-      <Round
-        onResult={(result) => {
-          console.log(result);
-          const sorted = Object.entries(result)
-            .sort((a, b) => b[1].failedAttempts - a[1].failedAttempts)
-            .map((w) => ({ word: w[0], failedAttempts: w[1].failedAttempts }));
-          setResults(sorted);
-          const array = sorted.map((w) => w.word);
-          setWords(array);
-          setPlaying(false);
-        }}
-        multiply={3}
-        words={words
-          .filter((w) => w.length > 0)
-          .map((w) => w.toLocaleLowerCase())
-          .map((w) => w.trim())}
-      />
+      <SpeechContext.Provider value={voice}>
+        <Round
+          onResult={(result) => {
+            console.log(result);
+            const sorted = Object.entries(result)
+              .sort((a, b) => b[1].failedAttempts - a[1].failedAttempts)
+              .map((w) => ({ word: w[0], failedAttempts: w[1].failedAttempts }));
+            setResults(sorted);
+            const array = sorted.map((w) => w.word);
+            setWords(array);
+            setPlaying(false);
+          }}
+          multiply={3}
+          words={words
+            .filter((w) => w.length > 0)
+            .map((w) => w.toLocaleLowerCase())
+            .map((w) => w.trim())}
+        />
+      </SpeechContext.Provider>
     );
   } else {
     return (
@@ -182,6 +217,15 @@ export const App = () => {
               />
             </RadioGroup>
           </FormControl>
+          <Box>
+            <Select
+                value={voice || 'Default Voice'}
+                onChange={(x) => setLang(x.target.value as any)}
+              >
+                <MenuItem disabled value={'Default voice'}>Default Voice</MenuItem>
+                {voices.map((voice, i) => <MenuItem key={i} value={voice}>{voice}</MenuItem>)}
+            </Select>
+          </Box>
           <Button onClick={() => setDictate(true)}>Start</Button>
         </Box>
       </Box>
