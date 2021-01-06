@@ -85,7 +85,7 @@ export const App = () => {
   const [voices, setVoices] = React.useState<string[]>([]);
   useEffect(() => {
     (async () =>  {
-      setVoices((await getSpeech()).map(voice => voice.name).filter(x => x.includes("")))
+      setVoices((await getSpeech()).map(voice => voice.name).filter(x => x.includes("nglish")))
     })();
   }, []);
   const [voice, setLang] = React.useState<string | undefined>('Default voice');
