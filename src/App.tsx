@@ -121,6 +121,7 @@ export const App = () => {
             </Select>
           </Box>
           <Button onClick={() => setDictate(true)}>Start</Button>
+          <a href="https://github.com/kirill578/muscle_verb">contribute on github</a>
         </Box>
       </Box>
     );
