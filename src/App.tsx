@@ -87,7 +87,6 @@ export const App = () => {
         justifyContent="space-around"
       >
         <Box display="flex" flexDirection="column" alignItems="top">
-          <Box m="10px" fontSize="25px">Practice spelling:</Box>
           <TextareaAutosize
             value={payload}
             onChange={(e) => {
@@ -97,8 +96,7 @@ export const App = () => {
               }
             }}
           />
-          <Box m="10px" fontSize="25px">Practice writing down when dictated:</Box>
-          <Box width="200px">
+          <Box width="500px">
             Speech Rate: {rate}
             <Slider
               value={rate}
