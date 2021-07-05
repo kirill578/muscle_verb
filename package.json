@@ -1,7 +1,7 @@
 {
-  "name": "muscle_spelling",
+  "name": "muscle_verb",
   "version": "0.1.0",
-  "homepage": "https://kirill578.github.io/muscle_spelling/",
+  "homepage": "https://kirill578.github.io/muscle_verb/",
   "dependencies": {
     "@material-ui/core": "^4.5.1",
     "@types/jest": "^24.0.19",
