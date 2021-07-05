@@ -7,7 +7,6 @@ import { WordRound } from './WordRound';
 import useSound from "use-sound";
 // @ts-ignore
 import Jabber from 'jabber';
-const jabber = new Jabber();
 
 const successFx = require('./sounds/success.mp3');
 const failFx = require('./sounds/fail.mp3');
@@ -60,7 +59,7 @@ export const stateMachine = Machine<
         },
         [State.Fail]: {
             after: {
-                200: {
+                800: {
                     target: State.Play,
                     actions: [],
                 },
@@ -74,40 +73,36 @@ export const stateMachine = Machine<
     },
 });
 
-export enum WordType {
-  Letters = "abcdefghijklmnopqrstuvwxyz",
-  Numbers = "0123456789",
-  NumbersDoubleAndTriple = "0123456789DT",
-  AlphaNumeric = "abcdefghijklmnopqrstuvwxyz0123456789",
-  Word = "word",
-}
-
-const createRandomNumber = (type: string, length: number) => [...new Array(length)].map(i => (Math.floor(Math.random() * type.length)) ).map(n => {
-  const letter = type[n];
-  if (type === WordType.NumbersDoubleAndTriple && (letter === 'D' || letter === 'T')) {
-    const newNumber = WordType.Numbers[Math.floor(Math.random() * WordType.Numbers.length)];
-    return `${letter === 'D' ? 'double' : 'triple'} ${newNumber}`;
-  }
-  return letter;
-}).join('. ');
-const createSetOfNumbers = (type: WordType, length: number, count: number)  => [...new Array(count)].map(_ => type === WordType.Word ? jabber.createWord(length).split('').join('. ') : createRandomNumber(type, length));
+type Sentence = {
+  original: string;
+  target: string;
+};
 
 export type DictateRoundProps = {
-  length: number;
+  sentences: Sentence[];
   rate: number;
-  type: WordType;
+};
+
+function shuffleArray<T>(originalArray: T[]): T[] {
+  const array = originalArray;
+  for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+  }
+  return array;
 }
 
-export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
-  const [words] = React.useState(createSetOfNumbers(type, length, 100));
+export const DictateRound = ({ rate, sentences: inputSentences }: DictateRoundProps) => {
+  const [sentences] = React.useState<Sentence[]>(() => shuffleArray([
+    ...inputSentences, 
+    ...inputSentences, 
+    ...inputSentences
+  ]));
+
   const [i, setI] = React.useState(0);
-  const word = words[i % words.length];
-
-  const target = word.replace(/double (\d)/g, '$1$1').replace(/triple (\d)/g, '$1$1$1').replace(/\s/g, "").replace(/\./g, '').replace(/,/g, '');
-  const sayWord = word;
-
-  // console.log(target);
-  // console.log(sayWord);
+  const sentance = sentences[i % sentences.length];
 
   const [playSuccess] = useSound(successFx);
   const [playFail] = useSound(failFx);
@@ -119,8 +114,8 @@ export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
       key={i} 
       blind={true}
       rate={rate}
-      targetWord={target}
-      sayWord={`It is ${sayWord}`}
+      targetWord={sentance.target}
+      sayWord={sentance.original}
       onSuccess={() => {
         send({
           type: 'success'
@@ -130,17 +125,19 @@ export const DictateRound = ({ length, rate, type }: DictateRoundProps) => {
       }}
       onFail={(failWith) => {
         if (failWith.length > 1)
-          console.log(`${word}\n${failWith} <-- error`)
+          console.log(`${sentance.original} ${sentance.target}\n${failWith} <-- error`)
         send({
           type: 'fail'
         })
         playFail();
-        setI(i => i + 1);
+        // setI(i => i + 1);
       }}
     />
   } else if (state === State.Success) {
     return <Box position="fixed" width="100%" height="100%" style={{backgroundColor: 'green'}} />;
   } else {
-    return <Box position="fixed" width="100%" height="100%" style={{backgroundColor: 'red'}} />;
+    return <Box position="fixed" width="100%" height="100%" style={{backgroundColor: 'red'}}> 
+      <Box color="white" margin="auto" fontSize="50px">{sentance.target}</Box>
+    </Box>;
   }
 };

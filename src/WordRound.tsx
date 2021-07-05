@@ -5,7 +5,7 @@ import "react-simple-keyboard/build/css/index.css";
 import { WordRow, LetterType } from "./LetterRow";
 import { SpeechContext } from "./speech";
 
-const abc = "abcdefghijklmnopqrstuvwxyz0123456789".split("");
+const abc = "abcdefghijklmnopqrstuvwxyz ".split("");
 
 type WordRoundProps = {
   rate?: number;
@@ -34,7 +34,7 @@ export const WordRound = ({
   const speechLang = React.useContext(SpeechContext);
   React.useEffect(() => {
     const msg = new SpeechSynthesisUtterance(sayWord || targetWord);
-    msg.voice = speechSynthesis.getVoices().find(voice => voice.name.includes(speechLang || "English"))!;
+    msg.voice = speechSynthesis.getVoices().find(voice => voice.lang === 'tr-TR')!;
     if (rate) {
       msg.rate = rate;
     }
@@ -110,6 +110,16 @@ export const WordRound = ({
                 type: (index < position ? LetterType.Correct : LetterType.Faded),
               };
             }
+          })}
+        />
+      </Box>      
+      <Box display="flex" flexDirection="row" margin="10px">
+        <WordRow
+          word={sayWord!.split("").map((char, index) => {
+              return {
+                char,
+                type: LetterType.Correct,
+              };
           })}
         />
       </Box>
