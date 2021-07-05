@@ -35,17 +35,19 @@ der;He says
 deriz;We say
 dersiniz;Yall say
 derler;They say
+
 diyorum; I am saying
 diyorsun; You are saying
 diyor; He is saying
 diyoruz; We are saying
 diyorsunuz; Yall are saying
-diyorlar; They are saying`;
+diyorlar; They are saying
+
+`;
 
 export const App = () => {
   const [payload, setPayload] = React.useState<string>(demo);
   const [rate, setRate] = React.useState(1);
-  const [length, setLength] = React.useState(6);
   const [dictate, setDictate] = React.useState(false);
 
 
@@ -57,7 +59,7 @@ export const App = () => {
   }, []);
   const [voice, setLang] = React.useState<string | undefined>('Default voice');
 
-  const sentences = payload.split("\n").map(line => {
+  const sentences = payload.split("\n").filter(line => line).map(line => {
     console.log(line)
     const [first, second] = line.split(";").map(sen => sen.trim());
     return {
@@ -107,19 +109,6 @@ export const App = () => {
               step={0.1}
               min={0.3}
               max={2}
-            />
-          </Box>
-          <Box width="200px">
-            Length: {length}
-            <Slider
-              value={length}
-              onChange={(event, newValue) => setLength(newValue as number)}
-              defaultValue={6}
-              aria-labelledby="discrete-slider"
-              valueLabelDisplay="auto"
-              step={1}
-              min={3}
-              max={15}
             />
           </Box>
           <Box>
