@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "f0f5daed8c16cc34e512923f6326646f",
+    "revision": "6ad596bc86428207ae104524c218c617",
     "url": "/muscle_verb/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/muscle_verb/static/css/2.2a61b6f0.chunk.css"
   },
   {
-    "revision": "56480e788c80dbb98f8b",
+    "revision": "e613301c1e67eb906a5e",
     "url": "/muscle_verb/static/css/main.34de6062.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/muscle_verb/static/js/3.1d180bfa.chunk.js"
   },
   {
-    "revision": "56480e788c80dbb98f8b",
-    "url": "/muscle_verb/static/js/main.44e34afc.chunk.js"
+    "revision": "e613301c1e67eb906a5e",
+    "url": "/muscle_verb/static/js/main.7d990960.chunk.js"
   },
   {
     "revision": "affe53ae7fd10c533b01",
