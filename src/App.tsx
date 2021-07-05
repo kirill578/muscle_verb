@@ -95,8 +95,6 @@ export const App = () => {
               }
             }}
           />
-        </Box>
-        <Box display="flex" flexDirection="column" alignItems="center">
           <Box m="10px" fontSize="25px">Practice writing down when dictated:</Box>
           <Box width="200px">
             Speech Rate: {rate}

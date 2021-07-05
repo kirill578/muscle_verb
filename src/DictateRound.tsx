@@ -136,8 +136,8 @@ export const DictateRound = ({ rate, sentences: inputSentences }: DictateRoundPr
   } else if (state === State.Success) {
     return <Box position="fixed" width="100%" height="100%" style={{backgroundColor: 'green'}} />;
   } else {
-    return <Box position="fixed" width="100%" height="100%" style={{backgroundColor: 'red'}}> 
-      <Box color="white" margin="auto" fontSize="50px">{sentance.target}</Box>
+    return <Box display="flex" alignItems="center" justifyContent="center" position="fixed" width="100%" height="100%" style={{backgroundColor: 'red'}}> 
+      <Box color="white" fontSize="50px">{sentance.target}</Box>
     </Box>;
   }
 };
